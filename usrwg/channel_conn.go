@@ -111,6 +111,7 @@ func (cc *ChannelConn) putIn(pkt []byte, d time.Duration) (ok bool) {
 		ok = true
 	case <-time.After(d):
 		ok = false
+		print("c")
 	}
 
 	return

@@ -304,11 +304,8 @@ func (c *Client) RunReceive() {
 	for {
 		frTyp, frLen, err = readFrameHeader(c.reader)
 
-		select {
-		case <-c.ctx.Done():
+		if c.ctx.Err() != nil {
 			return
-		default:
-			// fallthrough
 		}
 
 		if err != nil {

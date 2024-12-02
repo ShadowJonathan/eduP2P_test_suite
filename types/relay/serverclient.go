@@ -62,12 +62,14 @@ func (sc *ServerClient) SendPacket(pkt ServerPacket) {
 		queue = sc.sendSessionCh
 	}
 
-	// First pass trying to queue directly
-	select {
-	case <-sc.ctx.Done():
+	if sc.ctx.Err() != nil {
 		// return, dst is gone
 		sc.L().Warn("could not send packet; sc context done", "src", pkt.src.Debug())
 		return
+	}
+
+	// First pass trying to queue directly
+	select {
 	case queue <- pkt:
 		return
 	default:
@@ -87,6 +89,7 @@ func (sc *ServerClient) SendPacket(pkt ServerPacket) {
 			return
 		case <-time.NewTimer(time.Second * 5).C:
 			// Timed out, return
+			print("r")
 			return
 		}
 	}()
@@ -124,10 +127,8 @@ func (sc *ServerClient) RunReceiver() {
 		}
 
 		// First see if the context has been cancelled
-		select {
-		case <-sc.ctx.Done():
+		if sc.ctx.Err() != nil {
 			return
-		default:
 		}
 
 		switch frType {

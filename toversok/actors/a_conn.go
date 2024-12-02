@@ -279,6 +279,7 @@ func (ic *InConn) ForwardPacket(pkt []byte) {
 		// TODO maybe convert dropping to timeout?
 		//  making lots of timers would be costly though
 		// TODO log? metric?
+		print("f")
 	}
 }
 

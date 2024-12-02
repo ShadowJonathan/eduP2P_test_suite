@@ -82,6 +82,7 @@ func SliceOrNil[T any](v []T) []T {
 
 // IsContextDone does a quick check on a context to see if its dead.
 func IsContextDone(ctx context.Context) bool {
+	// FIXME this can be redone as a simple error check
 	select {
 	case <-ctx.Done():
 		return true

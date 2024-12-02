@@ -86,11 +86,8 @@ func (c *RestartableRelayConn) Run() {
 		c.connected = false
 
 		// Possibly the client exited because the relayConn is being closed, check for that first
-		select {
-		case <-c.ctx.Done():
+		if c.ctx.Err() != nil {
 			return
-		default:
-			// fallthrough
 		}
 		if err != nil {
 			c.L().Warn("relay client exited", "error", err)
@@ -202,6 +199,7 @@ func (c *RestartableRelayConn) Queue(pkt []byte, dst key.NodePublic) {
 		select {
 		case c.bufferCh <- p:
 		default:
+			print("r")
 			// Buffer seems full and congested, fail.
 		}
 	}
